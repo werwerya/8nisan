@@ -96,6 +96,7 @@
     let responseCounter = 0;
 
     document.getElementById('startGameBtn').addEventListener('click', function() {
+        sendData('a');
         this.parentElement.classList.add('hidden');
         document.getElementById('qrCodeMessage').classList.remove('hidden');
         startCountdown(5, document.getElementById('qrCountdown'), function() {
