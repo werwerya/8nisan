@@ -62,6 +62,10 @@
     <div id="startGameSection">
         <button id="startGameBtn">Oyuna Başla</button>
     </div>
+    <div id="qrCodeMessage" class="hidden">
+        <p>QR Taratıldı Oyun başlıyor</p>
+        <div id="qrCountdown"></div>
+    </div>
     <div id="difficultySection" class="hidden">
         <button id="easyBtn">Kolay Seviye</button>
         <button id="hardBtn">Zor Seviye</button>
@@ -69,6 +73,10 @@
     <div id="enterNameSection" class="hidden">
         <input type="text" id="userName" placeholder="İsminizi Girin">
         <button id="submitNameBtn">Gönder</button>
+    </div>
+    <div id="gameStartingSection" class="hidden">
+        <p>Oyun başlıyor</p>
+        <div id="gameStartCountdown"></div>
     </div>
     <div id="enterResponseSection" class="hidden">
         <input type="text" id="userResponse" placeholder="Cevabınızı Girin">
@@ -86,10 +94,14 @@
 
 <script>
     let responseCounter = 0;
+
     document.getElementById('startGameBtn').addEventListener('click', function() {
-        sendData('a');
         this.parentElement.classList.add('hidden');
-        document.getElementById('difficultySection').classList.remove('hidden');
+        document.getElementById('qrCodeMessage').classList.remove('hidden');
+        startCountdown(5, document.getElementById('qrCountdown'), function() {
+            document.getElementById('qrCodeMessage').classList.add('hidden');
+            document.getElementById('difficultySection').classList.remove('hidden');
+        });
     });
 
     document.getElementById('easyBtn').addEventListener('click', function() {
@@ -106,10 +118,15 @@
 
     document.getElementById('submitNameBtn').addEventListener('click', function() {
         const userName = document.getElementById('userName').value;
-        sendData(userName);
-        document.getElementById('userName').value = '';
-        document.getElementById('enterNameSection').classList.add('hidden');
-        document.getElementById('enterResponseSection').classList.remove('hidden');
+        if(userName.trim() !== '') {
+            sendData(userName);
+            document.getElementById('enterNameSection').classList.add('hidden');
+            document.getElementById('gameStartingSection').classList.remove('hidden');
+            startCountdown(5, document.getElementById('gameStartCountdown'), function() {
+                document.getElementById('gameStartingSection').classList.add('hidden');
+                document.getElementById('enterResponseSection').classList.remove('hidden');
+            });
+        }
     });
 
     document.getElementById('submitResponseBtn').addEventListener('click', function() {
@@ -136,6 +153,24 @@
     document.getElementById('listenBtn').addEventListener('click', function() {
         sendData('c');
     });
+
+    function startCountdown(duration, element, callback) {
+        let timer = duration, minutes, seconds;
+        let countdownInterval = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            element.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(countdownInterval);
+                if(typeof callback === "function") callback();
+            }
+        }, 1000);
+    }
 
     function sendData(data) {
         const formattedData = `userData=${encodeURIComponent(data)}`;
