@@ -44,7 +44,7 @@
             transition: background-color 0.3s;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #005dc0;
         }
         .hidden {
             display: none;
@@ -60,11 +60,15 @@
 
 <div class="container">
     <div id="startGameSection">
-        <button id="startGameBtn">Oyuna Başla</button>
+        <button id="startGameBtn">Girişi Onayla</button>
     </div>
     <div id="qrCodeMessage" class="hidden">
         <p>QR Taratıldı Oyun başlıyor</p>
         <div id="qrCountdown"></div>
+    </div>
+    <div id="preGameOptions" class="hidden">
+        <button id="restartGameBtn">Oyuna Başla</button>
+        <button id="scoreBoardBtn">Skor Tablosu</button>
     </div>
     <div id="difficultySection" class="hidden">
         <button id="easyBtn">Kolay Seviye</button>
@@ -101,8 +105,19 @@
         document.getElementById('qrCodeMessage').classList.remove('hidden');
         startCountdown(5, document.getElementById('qrCountdown'), function() {
             document.getElementById('qrCodeMessage').classList.add('hidden');
-            document.getElementById('difficultySection').classList.remove('hidden');
+            document.getElementById('preGameOptions').classList.remove('hidden');
         });
+    });
+
+    document.getElementById('restartGameBtn').addEventListener('click', function() {
+        sendData('x');
+        document.getElementById('preGameOptions').classList.add('hidden');
+        document.getElementById('difficultySection').classList.remove('hidden');
+    });
+
+    document.getElementById('scoreBoardBtn').addEventListener('click', function() {
+        sendData('y');
+        // Skor tablosunu göstermek için gereken işlevsellik buraya eklenebilir
     });
 
     document.getElementById('easyBtn').addEventListener('click', function() {
